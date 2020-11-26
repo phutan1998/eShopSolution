@@ -3,7 +3,6 @@ using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
 using eShopSolution.Utilities.Exceptions;
 using eShopSolution.ViewModels.Catalog.Products;
-using eShopSolution.ViewModels.Catalog.Products.Manage;
 using eShopSolution.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,7 @@ namespace eShopSolution.Application.Catalog.Products
     {
         private readonly EShopDbContext _context;
         private readonly IStorageService _storageService;
+
         public ManageProductService(EShopDbContext context, IStorageService storageService)
         {
             _context = context;
@@ -86,7 +86,6 @@ namespace eShopSolution.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new EShopException($"Cannot find a product: {productId}");
 
-
             var images = _context.ProductImages.Where(i => i.ProductId == productId);
             foreach (var image in images)
             {
@@ -97,7 +96,7 @@ namespace eShopSolution.Application.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
         {
             //1. Select join
             var query = from p in _context.Products
@@ -168,8 +167,6 @@ namespace eShopSolution.Application.Catalog.Products
             productTranslations.SeoTitle = request.SeoTitle;
             productTranslations.Description = request.Description;
             productTranslations.Details = request.Details;
-
-
 
             //Save image
             if (request.ThumbnailImage != null)
